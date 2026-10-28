@@ -1,10 +1,9 @@
 import express, { Express, response } from "express";
 import { db } from "./db/in-memory.db";
 import { HttpStatus } from "./core/types/http-status";
-import { Blog } from "./blogs/types/blog";
-import { Post } from "./posts/types/post";
+import { blogsRepository } from "./repositories/blog.repository";
+import { postsRepository } from "./repositories/posts.repository";
 import { blogsRouter } from "./blogs/routers/blogs.router";
-import {randomUUID} from "crypto";
 
 export const setupApp = (app: Express) => {
   app.use(express.json());
@@ -17,7 +16,8 @@ export const setupApp = (app: Express) => {
   });
 
   app.get("/ht_02/api/blogs", (_req, res) => {
-    res.status(HttpStatus.Ok_200).send(db.blogs);
+    const blogs = blogsRepository.findAll();
+    res.status(HttpStatus.Ok_200).send(blogs);
   });
 
   app.post("/ht_02/api/blogs", (req, res) => {
@@ -58,18 +58,18 @@ export const setupApp = (app: Express) => {
       return;
     }
 
-    const newBlog: Blog  = {
-      id: randomUUID(),
+    const newBlog = blogsRepository.create( {
+
       name: req.body.name ?? "admin",
       description: req.body.description,
       websiteUrl: req.body.websiteUrl,
-    }
-    db.blogs.push(newBlog);
+    });
+
     res.status(HttpStatus.Created_201).send(newBlog);
   });
 
   app.get('/ht_02/api/blogs/:id', (req, res)=>{
-    const foundBlog = db.blogs.find((b) => b.id === req.params.id );
+    const foundBlog = blogsRepository.findById(req.params.id );
     if (!foundBlog) {
       res.sendStatus(HttpStatus.NotFound_404);
       return;
@@ -78,14 +78,7 @@ export const setupApp = (app: Express) => {
   });
 
   app.put('/ht_02/api/blogs/:id', (req, res)=> {
-    const foundBlog = db.blogs.find((d) => d.id === req.params.id);
-
-    if (!foundBlog) {
-      res.sendStatus(HttpStatus.NotFound_404);
-      return;
-    }
-
-    let errorsMessages: {message: string, field: string}[] = [];
+    const errorsMessages: {message: string, field: string}[] = [];
 
     if (
         typeof req.body.name !== "string" ||
@@ -122,26 +115,34 @@ export const setupApp = (app: Express) => {
       return;
     }
 
-    foundBlog.name = req.body.name;
-    foundBlog.description = req.body.description;
-    foundBlog.websiteUrl = req.body.websiteUrl;
-    res.sendStatus(HttpStatus.NoContent_204)
+    const isUpdate = blogsRepository.update(req.params.id, {
+      name: req.body.name,
+      description: req.body.description,
+      websiteUrl: req.body.websiteUrl,
+    });
+
+    if (!isUpdate) {
+      res.sendStatus(HttpStatus.NotFound_404)
+      return;
+    }
+
+    res.sendStatus(HttpStatus.NoContent_204);
 
   });
 
   app.delete('/ht_02/api/blogs/:id', (req, res) => {
-    const foundIndex = (db.blogs.findIndex((b) => b.id === req.params.id))
-    if (foundIndex === -1) {
+    const isDeleted = blogsRepository.delete(req.params.id)
+    if (!isDeleted) {
       res.sendStatus(HttpStatus.NotFound_404);
       return;
     }
-    db.blogs.splice(foundIndex, 1);
     res.sendStatus(HttpStatus.NoContent_204);
   });
 
 
   app.get("/ht_02/api/posts", (_req, res) => {
-    res.status(HttpStatus.Ok_200).send(db.posts);
+    const posts = postsRepository.findAll();
+    res.status(HttpStatus.Ok_200).send(posts);
   });
 
   app.post("/ht_02/api/posts", (req, res) => {
@@ -170,7 +171,7 @@ export const setupApp = (app: Express) => {
     if(typeof req.body.blogId !== "string") {
       errorsMessages.push({message: "blogId error", field:"blogId"});
     } else {
-      const foundBlog = db.blogs.find((b) => b.id === req.body.blogId);
+      const foundBlog = blogsRepository.findById(req.body.blogId);
 
       if (!foundBlog) {
         errorsMessages.push({message: "Blog not found", field:"blogId"});
@@ -182,23 +183,21 @@ export const setupApp = (app: Express) => {
       return;
     }
 
-    const targetBlog = db.blogs.find(b => b.id === req.body.blogId)!;
 
-    const newPost: Post = {
-      // id: (lastPost ? Number(lastPost.id) + 1 : 1).toString(),
-      id: randomUUID(),
+
+    const newPost = postsRepository.create({
+
       title: req.body.title,
       shortDescription: req.body.shortDescription,
       content: req.body.content,
       blogId: req.body.blogId,
-      blogName: targetBlog.name,
-    }
-    db.posts.push(newPost);
+    });
+
     res.status(HttpStatus.Created_201).send(newPost);
   });
 
   app.get("/ht_02/api/posts/:id", (req, res) => {
-    const foundPost = db.posts.find((p)=> p.id === req.params.id)
+    const foundPost = postsRepository.findById(req.params.id)
     if (!foundPost)
     {
       res.status(HttpStatus.NotFound_404).send("Not Found");
@@ -208,12 +207,6 @@ export const setupApp = (app: Express) => {
   });
 
   app.put("/ht_02/api/posts/:id", (req, res) => {
-    const foundPost = db.posts.find((p)=> p.id === req.params.id)
-    if (!foundPost) {
-      res.sendStatus(HttpStatus.NotFound_404)
-      return;
-    }
-
     const errorsMessages: {message: string, field: string}[] = [];
 
     if (typeof req.body.title !== "string" ||
@@ -240,7 +233,7 @@ export const setupApp = (app: Express) => {
     if(typeof req.body.blogId !== "string") {
       errorsMessages.push({message: "blogId error", field: "blogId"});
     } else {
-      const foundBlog = db.blogs.find(b => b.id === req.body.blogId);
+      const foundBlog = blogsRepository.findById(req.body.blogId);
       if (!foundBlog) {
         errorsMessages.push({message: "Blog not found", field: "blogId"});
       }
@@ -251,26 +244,28 @@ export const setupApp = (app: Express) => {
       return;
     }
 
-    const targetBlog = db.blogs.find(b => b.id === req.body.blogId)!;
+    const isUpdate = postsRepository.update(req.params.id, {
 
-    foundPost.title = req.body.title;
-    foundPost.shortDescription = req.body.shortDescription;
-    foundPost.content = req.body.content;
-    foundPost.blogId = req.body.blogId;
-    foundPost.blogName = targetBlog.name;
+      title: req.body.title,
+      shortDescription: req.body.shortDescription,
+      content: req.body.content,
+      blogId: req.body.blogId,
+    });
 
+    if (!isUpdate) {
+      res.sendStatus(HttpStatus.NotFound_404);
+      return;
+    }
     res.sendStatus(HttpStatus.NoContent_204);
   });
 
   app.delete('/ht_02/api/posts/:id', (req, res) => {
-  const foundIndex = db.posts.findIndex((p) => p.id === req.params.id)
-  if (foundIndex === -1) {
+  const isDeleted = postsRepository.delete(req.params.id)
+  if (!isDeleted) {
     res.sendStatus(HttpStatus.NotFound_404);
     return;
   }
-  db.posts.splice(foundIndex, 1);
   res.sendStatus(HttpStatus.NoContent_204);
-  return;
 });
 
   return app;

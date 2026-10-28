@@ -1,5 +1,6 @@
 import { Blog } from '../blogs/types/blog';
 import { db } from '../db/in-memory.db'
+import {randomUUID} from "crypto";
 
 export const blogsRepository = {
 
@@ -12,13 +13,12 @@ export const blogsRepository = {
     },
 
     create(newBlog: Omit<Blog, 'id'>): Blog {
-      const id = crypto.randomUUID();
-      const createdBlog : Blog = {
-        id,
-        ...newBlog,
-      };
-      db.blogs.push(createdBlog);
-      return createdBlog;
+        const createdBlog: Blog = {
+            id: randomUUID(),
+            ...newBlog,
+        };
+        db.blogs.push(createdBlog);
+        return createdBlog;
     },
 
     update(id: string, blogData: Omit<Blog, 'id'>): boolean {
