@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { BLOGS_ROUTES } from "../constants/blogs.paths";
-import { createBlogHandler } from "./handler/create-blog.handler";
-import {getBlogHandler} from "./handler/get-blog.handler.ts";
-import {getBlogListHandler} from "./handler/get-blog-list.handler.ts";
-import {updateBlogHandler} from "./handler/update-blog.handler.ts";
-import {deleteBlogHandler} from "./handler/delete-blog.handler.ts";
+import { createBlogHandler } from "./handlers/create-blog.handler";
+import {getBlogHandler} from "./handlers/get-blog.handler";
+import {getBlogListHandler} from "./handlers/get-blog-list.handler";
+import {updateBlogHandler} from "./handlers/update-blog.handler";
+import {deleteBlogHandler} from "./handlers/delete-blog.handler";
 
 
 export const blogsRouter = Router({});
