@@ -4,7 +4,7 @@ import { setupApp } from './setup-app.js';
 export const app = express();
 setupApp(app);
 
-const PORT = Number(process.env.PORT) || 3001;
+const PORT = Number(process.env.PORT) || 3000;
 const HOST = '0.0.0.0'
 
 if (process.env.NODE_ENV !== 'test') {
