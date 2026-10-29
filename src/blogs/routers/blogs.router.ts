@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { createBlogHandler } from "./handler/create-blog.handler";
 import { BLOGS_ROUTES } from "../constants/blogs.paths";
+import { createBlogHandler } from "./handler/create-blog.handler";
 import {getBlogHandler} from "./handler/get-blog.handler.ts";
 import {getBlogListHandler} from "./handler/get-blog-list.handler.ts";
 import {updateBlogHandler} from "./handler/update-blog.handler.ts";
