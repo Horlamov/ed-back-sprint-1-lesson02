@@ -1,8 +1,8 @@
 import {Router} from "express";
-import {TEST_PATH} from "./testing.paths";
-import {deleteTestingHandler} from "./delete-testing.handler.ts";
+import {TEST_PATH, TEST_ROUTES} from "./testing.paths";
+import {deleteTestingHandler} from "./delete-testing.handler";
 
 export const testingRouter = Router({});
 
 testingRouter
-    .get(TEST_PATH, deleteTestingHandler)
+    .delete(TEST_ROUTES.ALL_DATA, deleteTestingHandler)

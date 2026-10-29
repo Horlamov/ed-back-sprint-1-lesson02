@@ -12,7 +12,7 @@ export const postsRouter = Router({});
 
 postsRouter
     .get(POSTS_ROUTES.ROOT,getPostsListHandler )
-    .post(POSTS_ROUTES.BY_ID, createPostHandler)
+    .post(POSTS_ROUTES.ROOT, createPostHandler)
     .get(POSTS_ROUTES.BY_ID, getPostHandler)
     .put(POSTS_ROUTES.BY_ID, updatePostHandler)
     .delete(POSTS_ROUTES.BY_ID, deletePostHandler)

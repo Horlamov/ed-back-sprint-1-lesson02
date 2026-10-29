@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {HttpStatus} from "../../../core/types/http-status.ts";
-import {blogsRepository} from "../../../repositories/blog.repository.ts";
+import {HttpStatus} from "../../../core/types/http-status";
+import {blogsRepository} from "../../../repositories/blog.repository";
 
 export const updateBlogHandler = (req: Request<{id: string}>, res: Response)=> {
     const errorsMessages: {message: string, field: string}[] = [];
