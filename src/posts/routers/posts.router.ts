@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { POSTS_ROUTES } from "../constants/posts.paths";
-import {getPostsListHandler} from "./handler/get-posts-list.handler";
-import {createPostHandler} from "./handler/create-post.handler";
-import {getPostHandler} from "./handler/get-post.handler";
-import {updatePostHandler} from "./handler/update-post.handler";
-import {deletePostHandler} from "./handler/delete-post.handler";
+import {getPostsListHandler} from "./handlers/get-posts-list.handler";
+import {createPostHandler} from "./handlers/create-post.handler";
+import {getPostHandler} from "./handlers/get-post.handler";
+import {updatePostHandler} from "./handlers/update-post.handler";
+import {deletePostHandler} from "./handlers/delete-post.handler";
 
 
 
