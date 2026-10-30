@@ -10,14 +10,14 @@ describe('Testing API', () => {
     // Очищаем базу перед каждым тестом, чтобы он начинался с чистого листа
     beforeEach(async () => {
         await request(app)
-            .delete('/ht_02/api/testing/all-data')
+            .delete('/testing/all-data')
             .expect(HttpStatus.NoContent_204);
     });
 
-    it('should clear all data from database; DELETE /ht_02/api/testing/all-data', async () => {
+    it('should clear all data from database; DELETE /api/testing/all-data', async () => {
         // 1. Создаем блог
         const createBlogRes = await request(app)
-            .post('/ht_02/api/blogs')
+            .post('/blogs')
             .send({
                 name: 'Test Blog',
                 description: 'Test Description',
@@ -29,7 +29,7 @@ describe('Testing API', () => {
 
         // 2. Создаем пост
         await request(app)
-            .post('/ht_02/api/posts')
+            .post('/posts')
             .send({
                 title: 'Test Post',
                 shortDescription: 'Short',
@@ -39,26 +39,26 @@ describe('Testing API', () => {
             .expect(HttpStatus.Created_201);
 
         // 3. Проверяем, что данные записались (ровно по 1 элементу)
-        const blogsBeforeClear = await request(app).get('/ht_02/api/blogs');
+        const blogsBeforeClear = await request(app).get('/blogs');
         expect(blogsBeforeClear.body.length).toBe(1);
 
-        const postsBeforeClear = await request(app).get('/ht_02/api/posts');
+        const postsBeforeClear = await request(app).get('/posts');
         expect(postsBeforeClear.body.length).toBe(1);
 
         // 4. ВЫЗЫВАЕМ ОЧИСТКУ БАЗЫ
         await request(app)
-            .delete('/ht_02/api/testing/all-data')
+            .delete('/testing/all-data')
             .expect(HttpStatus.NoContent_204);
 
         // 5. Проверяем, что блоги удалены
         const blogsAfterClear = await request(app)
-            .get('/ht_02/api/blogs')
+            .get('/blogs')
             .expect(HttpStatus.Ok_200);
         expect(blogsAfterClear.body).toEqual([]);
 
         // 6. Проверяем, что посты удалены
         const postsAfterClear = await request(app)
-            .get('/ht_02/api/posts')
+            .get('/posts')
             .expect(HttpStatus.Ok_200);
         expect(postsAfterClear.body).toEqual([]);
     });
