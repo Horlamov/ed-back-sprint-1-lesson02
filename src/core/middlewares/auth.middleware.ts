@@ -3,14 +3,14 @@ import {HttpStatus} from "../types/http-status";
 export const superAdminGuardMiddleware = (
     req: Request, res: Response, next:NextFunction
 ) => {
-    const auth = req.headers['authorization' ] as string;
+    const auth = req.headers['authorization'] as string;
 
     if (!auth) {
         return res.sendStatus(HttpStatus.Unauthorized_401);
     }
 
 
-    const[authType, token] = auth.split(':');
+    const[authType, token] = auth.split(' ');
     if (authType!== 'Basic' || token ) {
         return res.sendStatus(HttpStatus.Unauthorized_401);
     }

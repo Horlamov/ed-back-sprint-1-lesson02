@@ -12,6 +12,18 @@ describe('Blogs API', () => {
     db.blogs = [];
   });
 
+  it('should create new blog; POST /blogs', async () => {
+    await request(app)
+        .post('/blogs')
+        .auth('admin', 'qwerty') // <--- ВОТ ЭТА СТРОЧКА
+        .send({
+          name: 'Test Blog',
+          description: 'Description',
+          websiteUrl: 'https://test.com',
+        })
+        .expect(HttpStatus.Created_201);
+  });
+
   it('should create new blog; POST /api/blogs', async () => {
     // 1. Подготовка валидных данных
     const blogData = {
