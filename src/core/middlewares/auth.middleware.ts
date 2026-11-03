@@ -1,7 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import {HttpStatus} from "../types/http-status";
-export const superAdminGuardMiddleware = (req: Request, res: Response, next:NextFunction) => {
-    const auth = req.headers['autorization'] as string;
+export const superAdminGuardMiddleware = (
+    req: Request, res: Response, next:NextFunction
+) => {
+    const auth = req.headers['authorization'] as string;
 
     if (!auth) {
         return res.sendStatus(HttpStatus.Unauthorized_401);
