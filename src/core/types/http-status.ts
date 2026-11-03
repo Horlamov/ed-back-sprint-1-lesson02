@@ -4,6 +4,6 @@ export const HttpStatus = {
   Created_201: 201,
   NoContent_204: 204,
   BadRequest_400: 400,
-  Unauthorized_401: 400,
+  Unauthorized_401: 401,
   NotFound_404: 404,
 } as const;
