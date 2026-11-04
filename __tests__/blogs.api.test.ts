@@ -8,14 +8,14 @@ describe('Blogs API', () => {
   const app = express();
   setupApp(app); // Настраиваем наше приложение
   // Перед каждым тестом очищаем базу, чтобы тесты не мешали друг другу
-  beforeEach(() => {
-    db.blogs = [];
+  beforeEach(async () => {
+    await request(app).delete('/testing/all-data'); // Чистим всё через тестовый эндпоинт
   });
 
   it('should create new blog; POST /blogs', async () => {
     await request(app)
         .post('/blogs')
-        .auth('admin', 'qwerty') // <--- ВОТ ЭТА СТРОЧКА
+        .auth('admin', 'qwerty')
         .send({
           name: 'Test Blog',
           description: 'Description',
@@ -34,7 +34,8 @@ describe('Blogs API', () => {
 
     // 2. Отправка запроса
     const response = await request(app)
-      .post('/api/blogs')
+      .post('/blogs')
+      .auth('admin', 'qwerty')
       .send(blogData)
       .expect(HttpStatus.Created_201); // Ждём статус 201
 

@@ -14,10 +14,13 @@ describe('Testing API', () => {
             .expect(HttpStatus.NoContent_204);
     });
 
+
+
     it('should clear all data from database; DELETE /api/testing/all-data', async () => {
         // 1. Создаем блог
         const createBlogRes = await request(app)
             .post('/blogs')
+            .auth('admin', 'qwerty')
             .send({
                 name: 'Test Blog',
                 description: 'Test Description',
@@ -30,6 +33,7 @@ describe('Testing API', () => {
         // 2. Создаем пост
         await request(app)
             .post('/posts')
+            .auth('admin', 'qwerty')
             .send({
                 title: 'Test Post',
                 shortDescription: 'Short',

@@ -10,8 +10,8 @@ export const superAdminGuardMiddleware = (
     }
 
 
-    const[authType, token] = auth.split(' ');
-    if (authType!== 'Basic' || token ) {
+    const [authType, token] = auth.split(' ');
+    if (authType !== 'Basic' || !token ) {
         return res.sendStatus(HttpStatus.Unauthorized_401);
     }
 
