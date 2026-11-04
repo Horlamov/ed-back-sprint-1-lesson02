@@ -13,7 +13,7 @@ export const postsRouter = Router({});
 postsRouter
     .get(POSTS_ROUTES.ROOT,getPostsListHandler )
     .post(POSTS_ROUTES.ROOT, superAdminGuardMiddleware, createPostHandler)
-    .get(POSTS_ROUTES.BY_ID, superAdminGuardMiddleware, getPostHandler)
-    .put(POSTS_ROUTES.BY_ID, updatePostHandler)
+    .get(POSTS_ROUTES.BY_ID, superAdminGuardMiddleware)
+    .put(POSTS_ROUTES.BY_ID, updatePostHandler, getPostHandler)
     .delete(POSTS_ROUTES.BY_ID, superAdminGuardMiddleware, deletePostHandler)
 
